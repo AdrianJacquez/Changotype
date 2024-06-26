@@ -1,9 +1,31 @@
-
 const $time = document.querySelector("time");
 const $input = document.querySelector("input");
 const $paragraph = document.querySelector("p");
+const $game = document.querySelector('#game');
+const $results = document.querySelector('#results');
+const $wpm = document.querySelector('#results-wpm');
+const $accuracy = $results.querySelector('#results-accuracy');
+const $reloadB = document.querySelector('#reloadB');
 
 const starTime = 30;
+const text = [
+    "virtud", "sabiduria", "templanza", "coraje", "justicia", "disciplina",
+    "tranquilidad", "apatheia", "ataraxia", "eudaimonia", "logos", "destino",
+    "razon", "moralidad", "prudencia", "determinismo", "indiferencia", "naturaleza",
+    "autocontrol", "resiliencia", "serenidad", "equilibrio", "aceptacion",
+    "impermanencia", "perspectiva", "fortaleza", "altruismo", "compasion",
+    "estoicismo", "humanidad", "humildad", "integridad", "etica", "gratitud",
+    "tolerancia", "paciencia", "ecuanimidad", "responsabilidad", "reflexion",
+    "sabio", "bueno", "malo", "accion", "percepcion", "juicio", "valor",
+    "esfuerzo", "autonomia", "libertad", "voluntad", "firmeza", "armonia",
+    "simplicidad", "contento", "moderacion", "rectitud", "meditacion",
+    "benevolencia", "caridad", "composicion", "calma", "honor", "lealtad",
+    "dignidad", "caracter", "constancia", "igualdad", "fuerza de voluntad",
+    "calma", "pensamiento", "persistencia", "amabilidad", "frugalidad",
+    "paz", "fortaleza", "alegria", "logica", "conciencia", "honestidad",
+    "enfoque", "resistencia", "autosuficiencia", "kaizen", "mementomori"
+];
+
 
 let words = [];
 let currentTime = starTime;
@@ -14,8 +36,13 @@ initEvents();
 
 // FUNCION PARA INICIAR JUEGO
 function initGame() {
-  words = startWords.toSorted(() => Math.random() - 0.5).slice(0, 32);
-  console.log(words);
+  $game.style.display = 'flex'
+  $results.style.display = 'none'
+  $input.value = '';
+
+  words = text.toSorted(
+    () => Math.random() - 0.5
+  ).slice(0, 30);
 
   currentTime = starTime;
 
@@ -36,7 +63,7 @@ function initGame() {
 
     if (currentTime === 0) {
       clearInterval(intervalId);
-      console.log("GAME OVER");
+      gameOver();
     }
   }, 1000);
 
@@ -52,6 +79,7 @@ function initEvents() {
   });
   $input.addEventListener("keydown", onKeyDown);
   $input.addEventListener("keyup", onKeyUp);
+  $reloadB.addEventListener('click', initGame)
 }
 
 function onKeyDown(event) {
@@ -143,5 +171,24 @@ function onKeyUp() {
     $nextActiveLetter.classList.add("active");
   } else {
     $currentLetter.classList.add("active", "is-last");
+    
   }
+}
+
+function gameOver(){
+$game.style.display = 'none'
+$results.style.display = 'flex'
+
+const correctWords = $paragraph.querySelectorAll('x-word.correct').length
+const correctLetter = $paragraph.querySelectorAll('y-letter.correct').length
+const incorrectLetter = $paragraph.querySelectorAll('y-letter.incorrect').length
+
+const totalLetters = correctLetter + incorrectLetter
+const accuracy = totalLetters > 0
+?(correctLetter / totalLetters) * 100
+: 0
+
+const wpm = correctWords * 60 / starTime
+$wpm.textContent = wpm
+$accuracy.textContent = `${accuracy.toFixed(2)}%`
 }
