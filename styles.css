@@ -4,15 +4,18 @@ body {
   display: grid;
   padding: 32px;
   justify-content: center;
+  align-items: center;
   margin-top: 32px;
   padding: 16px;
   color: white;
+  
 }
 
 section {
   padding: 16px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 4px;
   max-width: 500px;
 }
@@ -104,7 +107,6 @@ h3 {
 
 #reloadB {
   background-color: transparent;
-  color: #ffd82b;
   border: 0;
   margin-top: 32px;
   padding: 8px;
@@ -116,7 +118,14 @@ h3 {
 }
 #reloadB:hover {
   background-color: #ffd82b;
-  color: black;
   opacity: 1;
   scale: 110%;
+}
+#reloadB svg {
+  stroke: #ffd82b; /* Aplicar el color al contorno del SVG */
+  transition: stroke 0.3s ease-in-out;
+}
+
+#reloadB:hover svg {
+  stroke: black; /* Cambiar el color al hacer hover */
 }
