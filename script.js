@@ -1,10 +1,10 @@
+import { words as startWords } from "./data.js";
+
 const $time = document.querySelector("time");
 const $input = document.querySelector("input");
 const $paragraph = document.querySelector("p");
 
 const starTime = 30;
-const text =
-  "recuerda siempre que la paz interior proviene de tus propios pensamientos no es lo que te sucede sino como reaccionas ante lo que te sucede lo que determina tu serenidad no te permitas ser perturbado por cosas fuera de tu control en lugar de eso concentrate en manejar tus propias acciones y actitudes todo lo demas es simplemente una distraccion";
 
 let words = [];
 let currentTime = starTime;
@@ -15,7 +15,8 @@ initEvents();
 
 // FUNCION PARA INICIAR JUEGO
 function initGame() {
-  words = text.split(" ").slice(0, 60);
+  words = startWords.toSorted(() => Math.random() - 0.5).slice(0, 32);
+  console.log(words);
 
   currentTime = starTime;
 
@@ -72,6 +73,43 @@ function onKeyDown(event) {
     $nextLetter.classList.add("active");
 
     $input.value = "";
+
+    const hasMissedLetters =
+      $currentWord.querySelectorAll("y-letter:not(.correct)").length > 0;
+
+    const classToAdd = hasMissedLetters ? "marked" : "correct";
+    $currentWord.classList.add(classToAdd);
+    return;
+  }
+
+  if (key === "Backspace") {
+    const $prevWord = $currentWord.previousElementSibling;
+    const $prevLetter = $currentLetter.previousElementSibling;
+
+    if (!$prevWord && !$prevLetter) {
+      event.preventDefault();
+      return;
+    }
+
+    const $wordMarked = $paragraph.querySelector("x-word.marked");
+    if ($wordMarked && !$prevLetter) {
+      event.preventDefault();
+      $prevWord.classList.remove("marked");
+      $prevWord.classList.add("active");
+
+      const $letterToGo = $prevWord.querySelector("y-letter:last-child");
+
+      $currentLetter.classList.remove("active");
+      $letterToGo.classList.add("active");
+
+      $input.value = [
+        ...$prevWord.querySelectorAll("y-letter.correct, y-letter.incorrect"),
+      ]
+        .map(($el) => {
+          return $el.classList.contains("correct") ? $el.innerText : "*";
+        })
+        .join("");
+    }
   }
 }
 
