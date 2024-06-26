@@ -1,4 +1,3 @@
-import { words as startWords } from "./data.js";
 
 const $time = document.querySelector("time");
 const $input = document.querySelector("input");
